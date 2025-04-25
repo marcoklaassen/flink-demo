@@ -57,6 +57,12 @@ curl -i -X POST https://kafka-bridge-flink-demo.apps.ocp4.klaassen.click/topics/
 oc logs -f $(oc get pods -l app=flink-aggregator -l component=taskmanager -o name)
 ```
 
+Example output: 
+
+```
+<date> INFO  click.klaassen.flink.HttpSink [] - Sending aggregated Request: {"user":"Marco","total":8}
+```
+
 ## Monitoring
 
 Access the Flink Dashboard (`https://flink-aggregator-flink-demo.apps.ocp4.klaassen.click`) to get an overview. 
