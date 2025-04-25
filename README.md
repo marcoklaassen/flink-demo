@@ -10,7 +10,7 @@ The Flink component aggregates the events on the topic and sends the result to a
 * Streams for Apache Kafka operator installed
 * Flink Kubernetes Operator installed
 * OpenJDK 17 installed and configured
-* mvn installed and congigured
+* mvn installed and configured
 
 ## Installation
 
