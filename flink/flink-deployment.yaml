@@ -1,0 +1,118 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: flink-aggregator
+spec:
+  image: image-registry.openshift-image-registry.svc:5000/flink-demo/flink-with-s3:1.1
+  flinkVersion: v1_20
+
+  logConfiguration:
+    log4j-console.properties: |
+      # This affects logging for both user code and Flink
+      rootLogger.level = DEBUG
+      rootLogger.appenderRef.console.ref = ConsoleAppender
+
+      # The following lines keep the log level of common libraries/connectors on
+      # log level INFO. The root logger does not override this. You have to manually
+      # change the log levels here.
+      logger.akka.name = akka
+      logger.akka.level = INFO
+      logger.kafka.name= org.apache.kafka
+      logger.kafka.level = INFO
+      logger.hadoop.name = org.apache.hadoop
+      logger.hadoop.level = INFO
+      logger.zookeeper.name = org.apache.zookeeper
+      logger.zookeeper.level = INFO
+      logger.http.name = org.apache.http
+      logger.http.level = INFO
+
+      # Log all infos to the console
+      appender.console.name = ConsoleAppender
+      appender.console.type = CONSOLE
+      appender.console.layout.type = PatternLayout
+      appender.console.layout.pattern = %d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %-60c %x - %m%n
+
+      # Suppress the irrelevant (wrong) warnings from the Netty channel handler
+      logger.netty.name = org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline
+      logger.netty.level = OFF
+  
+  flinkConfiguration:
+
+    taskmanager.numberOfTaskSlots: "2"
+    
+    s3.access.key: minioadmin
+    s3.secret.key: minioadmin
+    s3.endpoint: http://minio.flink-demo.svc.cluster.local:9000
+    s3.path.style.access: "true"
+
+    # execution.checkpointing.interval: "5000"
+
+    # state.backend: rocksdb
+    # state.backend.incremental: "true"
+    # state.checkpoints.dir: s3://flink-data-checkpoints
+    # state.savepoints.dir: s3://flink-data-savepoints
+
+    # high-availability.type: kubernetes
+    # high-availability.storageDir: s3://flink-data-ha
+
+  serviceAccount: flink-service-account
+  jobManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+
+  taskManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+
+  job:
+    jarURI: s3://flink/kafka-aggregator-flink-1.0.jar
+    parallelism: 1
+    upgradeMode: stateless
+
+  podTemplate:
+    spec:
+      containers:
+        - name: flink-main-container
+          volumeMounts:
+            - name: kafka-user-secrets
+              mountPath: /opt/ssl/flink-user
+              readOnly: true
+            - name: kafka-cluster-secrets
+              mountPath: /opt/ssl/flink-cluster
+              readOnly: true
+          env:
+            - name: KAFKA_BOOTSTRAP
+              value: flink-cluster-kafka-bootstrap:9093
+            - name: TOPIC
+              value: "flink"
+            - name: GROUP_ID
+              value: "flink"                
+            - name: SECURITY_PROTOCOL
+              value: "SSL"
+            - name: STORE_TYPE
+              value: "PKCS12"
+            - name: TRUST_STORE_LOCATION
+              value: "/opt/ssl/flink-cluster/ca.p12"
+            - name: TRUST_STRORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: flink-cluster-cluster-ca-cert
+                  key: ca.password
+            - name: KEY_STORE_LOCATION
+              value: "/opt/ssl/flink-user/user.p12"
+            - name: KEY_STORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: flink-kafka
+                  key: user.password
+            - name: SINK_ENDPOINT
+              value: http://example.com
+      volumes:
+        - name: kafka-user-secrets
+          secret:
+            secretName: flink-kafka
+        - name: kafka-cluster-secrets
+          secret:
+            secretName: flink-cluster-cluster-ca-cert

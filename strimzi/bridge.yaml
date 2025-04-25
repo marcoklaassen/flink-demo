@@ -1,0 +1,35 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaBridge
+metadata:
+  name: flink-bridge
+spec:
+  authentication:
+    certificateAndKey:
+      certificate: user.crt
+      key: user.key
+      secretName: flink-kafka
+    type: tls
+  bootstrapServers: 'flink-cluster-kafka-bootstrap:9093'
+  http:
+    port: 8080
+  replicas: 1
+  tls:
+    trustedCertificates:
+      - pattern: '*.crt'
+        secretName: flink-cluster-cluster-ca-cert
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: kafka-bridge
+spec:
+  path: /
+  to:
+    name: flink-bridge-bridge-service
+    weight: 100
+    kind: Service
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  port:
+    targetPort: rest-api

@@ -1,0 +1,29 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  labels:
+    strimzi.io/cluster: flink-cluster
+  name: flink-kafka
+spec:
+  authentication:
+    type: tls
+  authorization:
+    acls:
+      - host: '*'
+        operations:
+          - Read
+          - Describe
+          - Write
+          - Create
+        resource:
+          name: flink
+          patternType: literal
+          type: topic
+      - host: '*'
+        operations:
+          - Read
+        resource:
+          name: flink
+          patternType: literal
+          type: group
+    type: simple

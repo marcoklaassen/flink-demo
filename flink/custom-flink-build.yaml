@@ -1,0 +1,35 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: flink-s3-image
+spec:
+  source:
+    dockerfile: |
+      FROM flink:1.20-java17
+
+      USER root
+
+      # Create plugin directory
+      RUN mkdir -p /opt/flink/plugins/s3-fs-presto
+
+      # Download the plugin from Maven Central (Presto S3 filesystem)
+      RUN curl -sL https://repo1.maven.org/maven2/org/apache/flink/flink-s3-fs-presto/1.20.0/flink-s3-fs-presto-1.20.0.jar \
+        -o /opt/flink/plugins/s3-fs-presto/flink-s3-fs-presto-1.20.0.jar
+
+      RUN chgrp -R 0 /opt/flink && \ 
+         chmod -R g=u /opt/flink
+
+      USER 1001
+  strategy:
+    type: Docker
+  output:
+    to:
+      kind: ImageStreamTag
+      name: flink-with-s3:1.1
+  triggers:
+    - type: ConfigChange
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: flink-with-s3

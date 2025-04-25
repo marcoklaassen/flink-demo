@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: minio
+  name: minio
+spec:
+  containers:
+  - name: minio
+    image: quay.io/minio/minio:latest
+    command:
+    - /bin/bash
+    - -c
+    args: 
+    - minio server /data --console-address :9090
+    volumeMounts:
+    - mountPath: /data
+      name: localvolume # Corresponds to the `spec.volumes` Persistent Volume
+  volumes:
+  - name: localvolume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+spec:
+  selector:
+    app: minio
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-web
+spec:
+  selector:
+    app: minio
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: minio
+spec:
+  path: /
+  to:
+    name: minio-web
+    weight: 100
+    kind: Service
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  port:
+    targetPort: 9090
