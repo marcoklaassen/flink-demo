@@ -1,0 +1,70 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: flink-pipeline
+spec:
+  tasks:
+    - name: git
+      params:
+        - name: URL
+          value: 'https://github.com/marcoklaassen/simple-flink-demo.git'
+        - name: REVISION
+          value: main        
+      taskRef:
+        kind: Task
+        name: git
+      workspaces:
+        - name: output
+          workspace: source
+    - name: maven
+      params:
+        - name: GOALS
+          value:
+            - package
+        - name: SUBDIRECTORY
+          value: ./flink-aggregator-app
+      runAfter:
+        - git
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: maven-1-18-0
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      workspaces:
+        - name: source
+          workspace: source
+        - name: maven_settings
+          workspace: mvn-settings
+    - name: buildah
+      params:
+        - name: IMAGE
+          value: 'image-registry.openshift-image-registry.svc:5000/flink-demo/flink:latest'
+        - name: DOCKERFILE
+          value: ./src/main/docker/Containerfile
+        - name: CONTEXT
+          value: ./flink-aggregator-app
+        - name: STORAGE_DRIVER
+          value: vfs
+        - name: FORMAT
+          value: oci        
+      runAfter:
+        - maven
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      workspaces:
+        - name: source
+          workspace: source
+  workspaces:
+    - name: source
+    - name: mvn-settings
