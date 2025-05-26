@@ -3,7 +3,7 @@ kind: FlinkDeployment
 metadata:
   name: flink-aggregator
 spec:
-  image: image-registry.openshift-image-registry.svc:5000/flink-demo/flink-with-s3:1.1
+  image: image-registry.openshift-image-registry.svc:5000/flink-demo/flink:latest
   flinkVersion: v1_20
 
   logConfiguration:
@@ -67,7 +67,7 @@ spec:
       cpu: 1
 
   job:
-    jarURI: s3://flink/kafka-aggregator-flink-1.0.jar
+    jarURI: local:///opt/flink/demo/kafka-aggregator-flink-1.0.jar
     parallelism: 1
     upgradeMode: stateless
 
