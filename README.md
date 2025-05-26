@@ -15,14 +15,15 @@ The Flink component aggregates the events on the topic and sends the result to a
 ## Installation
 
 * create a new project `flink` with `oc new-project flink-demo`
-* apply the manifests for minio (to provide the jar file) and strimzi (kafka infrastructure): 
+* apply the manifests for minio (to provide the jar file), strimzi (kafka infrastructure) and the tekton pipeline to build the java application and the flink-container-image: 
 
 ```
 oc apply -f minio
 oc apply -f strimzi
+oc apply -f tekton
 ```
 
-* build the flink aggregator app
+* build the flink aggregator app locally (optional)
 ```
 cd flink-aggregator-app
 mvn clean package
