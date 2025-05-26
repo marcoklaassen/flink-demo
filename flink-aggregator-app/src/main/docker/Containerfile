@@ -4,7 +4,7 @@ USER root
 
 RUN mkdir -p /opt/flink/demo
 
-COPY target/kafka-aggregator-flink-1.0.jar /opt/flink/demo/kafka-aggregator-flink-1.0.jar
+COPY target/kafka-aggregator-flink-1.0.jar demo/kafka-aggregator-flink-1.0.jar
                                         
 RUN chgrp -R 0 /opt/flink && \ 
     chmod -R g=u /opt/flink
