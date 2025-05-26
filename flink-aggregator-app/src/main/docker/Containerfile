@@ -1,4 +1,4 @@
-FROM registry.hub.docker.com/flink:1.20-java17
+FROM docker.io/flink:1.20-java17
 
 USER root
 
