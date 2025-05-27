@@ -6,7 +6,8 @@ import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-
+import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
+import org.apache.flink.streaming.api.windowing.time.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,8 @@ public class KafkaFlinkAggregator {
                 .filter(e -> e != null);
 
         DataStream<MyEvent> reduced = validEvents                
-                .keyBy(MyEvent::getUser)
+                .keyBy(MyEvent::getUser)                
+                .window(TumblingProcessingTimeWindows.of(Time.seconds(10)))
                 .reduce((e1, e2) -> new MyEvent(e1.getUser(), e1.getCounter() + e2.getCounter()));
 
         
