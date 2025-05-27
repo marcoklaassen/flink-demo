@@ -64,7 +64,7 @@ public class KafkaFlinkAggregator {
         .map(new SafeJsonDeserializer())
         .filter(e -> e != null)
         .keyBy(MyEvent::getUser)
-        .window(TumblingEventTimeWindows.of(Time.seconds(5)))                        
+        .window(TumblingProcessingTimeWindows.of(Time.seconds(5)))                        
         .reduce((e1, e2) -> new MyEvent(e1.getUser(), e1.getCounter() + e2.getCounter()))
         .map(e -> new AggregatedEvent(e.getUser(), e.getCounter()));        
 
