@@ -45,12 +45,14 @@ spec:
     s3.endpoint: http://minio.flink-demo.svc.cluster.local:9000
     s3.path.style.access: "true"
 
-    # execution.checkpointing.interval: "5000"
 
-    # state.backend: rocksdb
-    # state.backend.incremental: "true"
-    # state.checkpoints.dir: s3://flink-data-checkpoints
-    # state.savepoints.dir: s3://flink-data-savepoints
+    # Checkpoint config
+    execution.checkpointing.interval: "5000"
+
+    state.backend: rocksdb
+    state.backend.incremental: "true"
+    state.checkpoints.dir: s3://flink-data-checkpoints
+    state.savepoints.dir: s3://flink-data-savepoints
 
     # high-availability.type: kubernetes
     # high-availability.storageDir: s3://flink-data-ha

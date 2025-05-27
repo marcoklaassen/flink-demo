@@ -30,8 +30,7 @@ mvn clean package
 ```
 
 * Login to minio web-ui: https://minio-flink-demo.apps.ocp4.klaassen.click/ with default credentials
-* create a bucket `flink` via the minio web-ui
-* upload the generated jar file to the `flink` bucket via the minio web-ui
+* create two buckets `flink-data-checkpoints` & `flink-data-savepoints` via the minio web-ui
 
 * apply the manifests for the flink deployment and it's infrastructure
 ```
