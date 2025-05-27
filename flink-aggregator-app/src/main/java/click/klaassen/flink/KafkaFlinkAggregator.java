@@ -70,6 +70,6 @@ public class KafkaFlinkAggregator {
 
         stream.addSink(new HttpSink(sinkEndpoint));
 
-        env.execute("Kafka Aggregator with Safe Deserialization and Time Window");
+        env.execute("Kafka Aggregator with Safe Deserialization and Time Window Processing");
     } 
 }
