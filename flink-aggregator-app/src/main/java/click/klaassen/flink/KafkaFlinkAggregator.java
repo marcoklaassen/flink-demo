@@ -6,6 +6,7 @@ import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.slf4j.Logger;
@@ -55,27 +56,20 @@ public class KafkaFlinkAggregator {
 
         LOG.debug("Finished KafkaSource build.");
 
-        DataStream<String> rawStream = env.fromSource(
+        DataStream<AggregatedEvent> stream = env.fromSource(
                 kafkaSource,
                 WatermarkStrategy.noWatermarks(),
                 "Kafka Source"
-        );
+        )
+        .map(new SafeJsonDeserializer())
+        .filter(e -> e != null)
+        .keyBy(MyEvent::getUser)
+        .window(TumblingEventTimeWindows.of(Time.seconds(5)))                        
+        .reduce((e1, e2) -> new MyEvent(e1.getUser(), e1.getCounter() + e2.getCounter()))
+        .map(e -> new AggregatedEvent(e.getUser(), e.getCounter()));        
 
-        DataStream<MyEvent> validEvents = rawStream                
-                .map(new SafeJsonDeserializer())
-                .filter(e -> e != null);
+        stream.addSink(new HttpSink(sinkEndpoint));
 
-        DataStream<MyEvent> reduced = validEvents                
-                .keyBy(MyEvent::getUser)                
-                .window(TumblingProcessingTimeWindows.of(Time.seconds(10)))
-                .reduce((e1, e2) -> new MyEvent(e1.getUser(), e1.getCounter() + e2.getCounter()));
-
-        
-        DataStream<AggregatedEvent> aggregated = reduced
-            .map(e -> new AggregatedEvent(e.getUser(), e.getCounter()));
-
-        aggregated.addSink(new HttpSink(sinkEndpoint));
-
-        env.execute("Kafka Aggregator with Safe Deserialization");
+        env.execute("Kafka Aggregator with Safe Deserialization and Time Window");
     } 
 }
