@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: flink-error-handling
+spec:
+  path: /
+  to:
+    name: flink-error-handling-rest
+    weight: 100
+    kind: Service
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  port:
+    targetPort: rest
