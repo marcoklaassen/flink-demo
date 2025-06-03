@@ -63,6 +63,12 @@ Example output:
 <date> INFO  click.klaassen.flink.HttpSink [] - Sending aggregated Request: {"user":"Marco","total":8}
 ```
 
+## Build container image
+```
+oc create -f tekton/pipeline-run-error-handling.yaml
+oc create -f tekton/pipeline-run-aggregator.yaml
+```
+
 ## Monitoring
 
 Access the Flink Dashboard (`https://flink-aggregator-flink-demo.apps.ocp4.klaassen.click`) to get an overview. 
