@@ -11,6 +11,7 @@ The Flink component aggregates the events on the topic and sends the result to a
 * Flink Kubernetes Operator installed
 * OpenJDK 17 installed and configured
 * mvn installed and configured
+* Tekton CLI installed (`brew install tektoncd-cli`)
 
 ## Installation
 
@@ -30,7 +31,7 @@ mvn clean package
 ```
 
 * Login to minio web-ui: https://minio-flink-demo.apps.ocp4.klaassen.click/ with default credentials
-* create two buckets `flink-data-checkpoints` & `flink-data-savepoints` via the minio web-ui
+* create three buckets `flink-data-checkpoints`, `flink-data-savepoints` & `flink-error-handling` via the minio web-ui
 
 * apply the manifests for the flink deployment and it's infrastructure
 ```
