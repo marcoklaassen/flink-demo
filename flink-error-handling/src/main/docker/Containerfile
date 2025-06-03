@@ -1,0 +1,16 @@
+FROM docker.io/flink:1.20-java17
+
+USER root
+
+RUN mkdir -p /opt/flink/plugins/flink-s3-fs-hadoop
+RUN mkdir -p /opt/flink/demo
+
+RUN curl -sL https://repo1.maven.org/maven2/org/apache/flink/flink-s3-fs-hadoop/2.0.0/flink-s3-fs-hadoop-2.0.0.jar \
+    -o /opt/flink/plugins/flink-s3-fs-hadoop/flink-s3-fs-hadoop-2.0.0.jar
+
+COPY target/flink-error-handling-1.0.jar /opt/flink/demo/
+                                        
+RUN chgrp -R 0 /opt/flink && \ 
+    chmod -R g=u /opt/flink
+
+USER 1001

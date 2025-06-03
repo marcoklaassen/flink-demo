@@ -1,0 +1,6 @@
+.vscode
+.idea
+target
+.mvn
+flink-s3-fs-hadoop-*.jar
+flink/bin/flink-1.20.1
