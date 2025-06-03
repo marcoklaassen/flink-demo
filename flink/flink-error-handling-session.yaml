@@ -1,8 +1,9 @@
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
-  name: flink-error-handling
+  name: flink-session
 spec:
+  mode: native
   image: image-registry.openshift-image-registry.svc:5000/flink-demo/flink-error-handling:latest
   flinkVersion: v1_20
   
@@ -34,13 +35,11 @@ spec:
       memory: "2048m"
       cpu: 1
 
-  job:
-    jarURI: local:///opt/flink/demo/flink-error-handling-1.0.jar
-    parallelism: 1
-    upgradeMode: stateless
-
   podTemplate:
     spec:
       containers:
         - name: flink-main-container
           imagePullPolicy: Always
+          env:
+            - name: AWS_JAVA_V1_DISABLE_DEPRECATION_ANNOUNCEMENT
+              value: "true"

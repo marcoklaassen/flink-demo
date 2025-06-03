@@ -1,11 +1,11 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: flink-error-handling
+  name: flink-session
 spec:
   path: /
   to:
-    name: flink-error-handling-rest
+    name: flink-session-rest
     weight: 100
     kind: Service
   tls:

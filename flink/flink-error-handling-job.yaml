@@ -1,0 +1,10 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkSessionJob
+metadata:
+  name: flink-session-job
+spec:
+  deploymentName: flink-session
+  job:
+    jarURI: file:///opt/flink/demo/flink-error-handling-1.0.jar
+    parallelism: 1
+    upgradeMode: stateless
