@@ -3,11 +3,22 @@ kind: Pipeline
 metadata:
   name: flink-pipeline
 spec:
+  params:
+    - name: gitrepo
+      description: Git Repository
+      default: 'https://github.com/marcoklaassen/simple-flink-demo.git'
+    - name: gitrepo_subdir
+      description: Git Repository Sub Directory
+    - name: imagename
+      description: Name of the final Container Image
+  workspaces:
+    - name: source
+    - name: mvn-settings
   tasks:
     - name: git
       params:
         - name: URL
-          value: 'https://github.com/marcoklaassen/simple-flink-demo.git'
+          value: $(params.gitrepo)
         - name: REVISION
           value: main        
       taskRef:
@@ -22,7 +33,7 @@ spec:
           value:
             - package
         - name: SUBDIRECTORY
-          value: ./flink-aggregator-app
+          value: $(params.gitrepo_subdir) # ./flink-aggregator-app
       runAfter:
         - git
       taskRef:
@@ -42,7 +53,7 @@ spec:
     - name: buildah
       params:
         - name: IMAGE
-          value: 'image-registry.openshift-image-registry.svc:5000/flink-demo/flink:latest'
+          value: 'image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.imagename):latest' # flink
         - name: DOCKERFILE
           value: ./src/main/docker/Containerfile
         - name: CONTEXT
@@ -65,6 +76,3 @@ spec:
       workspaces:
         - name: source
           workspace: source
-  workspaces:
-    - name: source
-    - name: mvn-settings

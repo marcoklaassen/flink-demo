@@ -1,0 +1,34 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: flink-pipeline-
+spec:
+  params:
+    - name: gitrepo
+      value: 'https://github.com/marcoklaassen/simple-flink-demo.git'
+    - name: gitrepo_subdir
+      value: ./flink-aggregator-app
+    - name: imagename
+      value: flink
+  pipelineRef:
+    name: flink-pipeline
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+    - name: source
+      volumeClaimTemplate:
+        metadata:
+          creationTimestamp: null
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+          storageClassName: managed-nfs-storage
+          volumeMode: Filesystem
+        status: {}
+    - emptyDir: {}
+      name: mvn-settings
