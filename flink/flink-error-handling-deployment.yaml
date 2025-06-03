@@ -1,0 +1,46 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: flink-error-handling
+spec:
+  image: image-registry.openshift-image-registry.svc:5000/flink-demo/flink-error-handling:latest
+  flinkVersion: v1_20
+  
+  flinkConfiguration:
+
+    taskmanager.numberOfTaskSlots: "2"
+    
+    s3.access.key: minioadmin
+    s3.secret.key: minioadmin
+    s3.endpoint: http://minio.flink-demo.svc.cluster.local:9000
+    s3.path.style.access: "true"
+
+    # Checkpoint config
+    execution.checkpointing.interval: "5000"
+
+    state.backend: rocksdb
+    state.backend.incremental: "true"
+    state.checkpoints.dir: s3a://flink-data-checkpoints/checkpoints
+    state.savepoints.dir: s3a://flink-data-savepoints/savepoints
+
+  serviceAccount: flink-service-account
+  jobManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+
+  taskManager:
+    resource:
+      memory: "2048m"
+      cpu: 1
+
+  job:
+    jarURI: local:///opt/flink/demo/flink-error-handling-1.0.jar
+    parallelism: 1
+    upgradeMode: stateless
+
+  podTemplate:
+    spec:
+      containers:
+        - name: flink-main-container
+          imagePullPolicy: Always

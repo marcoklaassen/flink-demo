@@ -51,8 +51,8 @@ spec:
 
     state.backend: rocksdb
     state.backend.incremental: "true"
-    state.checkpoints.dir: s3://flink-data-checkpoints
-    state.savepoints.dir: s3://flink-data-savepoints
+    state.checkpoints.dir: s3://flink-data-checkpoints/checkpoints
+    state.savepoints.dir: s3://flink-data-savepoints/savepoints
 
     # high-availability.type: kubernetes
     # high-availability.storageDir: s3://flink-data-ha
