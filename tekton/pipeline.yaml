@@ -33,7 +33,7 @@ spec:
           value:
             - package
         - name: SUBDIRECTORY
-          value: $(params.gitrepo_subdir) # ./flink-aggregator-app
+          value: $(params.gitrepo_subdir)
       runAfter:
         - git
       taskRef:
@@ -53,11 +53,11 @@ spec:
     - name: buildah
       params:
         - name: IMAGE
-          value: 'image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.imagename):latest' # flink
+          value: 'image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.imagename):latest'
         - name: DOCKERFILE
           value: ./src/main/docker/Containerfile
         - name: CONTEXT
-          value: ./flink-aggregator-app
+          value: $(params.gitrepo_subdir)
         - name: STORAGE_DRIVER
           value: vfs
         - name: FORMAT
