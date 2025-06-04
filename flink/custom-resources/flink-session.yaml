@@ -4,7 +4,7 @@ metadata:
   name: flink-session
 spec:
   mode: native
-  image: image-registry.openshift-image-registry.svc:5000/flink-demo/flink-error-handling:latest
+  image: image-registry.openshift-image-registry.svc:5000/flink-demo/flink-s3:latest
   flinkVersion: v1_20
   
   flinkConfiguration:
