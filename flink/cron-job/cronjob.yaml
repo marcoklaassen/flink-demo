@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: submit-flinksessionjob
+spec:
+  # schedule: "0 * * * *"  # once per hour
+  schedule: "* * * * *"  # once per minute
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: flink-job-submitter
+          containers:
+            - name: flink-job-submitter
+              image: bitnami/kubectl:latest
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo "FlinkSessionJob is creating..."
+                  kubectl create -f \
+                    https://raw.githubusercontent.com/marcoklaassen/simple-flink-demo/refs/heads/main/flink/custom-resources/flink-error-handling-job.yaml
+          restartPolicy: OnFailure
