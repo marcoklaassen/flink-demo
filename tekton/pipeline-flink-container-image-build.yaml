@@ -1,0 +1,87 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: flink-container-image
+spec:
+  params:
+    - name: gitrepo
+      description: Git Repository
+      default: 'https://github.com/marcoklaassen/simple-flink-demo.git'
+    - name: gitrepo_subdir
+      description: Git Repository Sub Directory
+    - name: imagename
+      description: Name of the final Container Image
+    - name: containerfile
+      description: Path to the Containerfile
+    - name: include-maven-jar-package
+      description: execute maven package in the current directory
+      default: "false"
+  workspaces:
+    - name: source
+    - name: mvn-settings
+  tasks:
+    - name: git
+      params:
+        - name: URL
+          value: $(params.gitrepo)
+        - name: REVISION
+          value: main        
+      taskRef:
+        kind: Task
+        name: git
+      workspaces:
+        - name: output
+          workspace: source
+    - name: maven
+      params:
+        - name: GOALS
+          value:
+            - package
+        - name: SUBDIRECTORY
+          value: $(params.gitrepo_subdir)
+      runAfter:
+        - git
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: maven-1-18-0
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      when:
+        - input: "$(params.include-maven-jar-package)"
+          operator: in
+          values: ["true"]
+      workspaces:
+        - name: source
+          workspace: source
+        - name: maven_settings
+          workspace: mvn-settings
+    - name: buildah
+      params:
+        - name: IMAGE
+          value: 'image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.imagename):latest'
+        - name: DOCKERFILE
+          value: $(params.containerfile)
+        - name: CONTEXT
+          value: $(params.gitrepo_subdir)
+        - name: STORAGE_DRIVER
+          value: vfs
+        - name: FORMAT
+          value: oci        
+      runAfter:
+        - maven
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      workspaces:
+        - name: source
+          workspace: source
