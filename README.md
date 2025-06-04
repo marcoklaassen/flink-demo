@@ -12,6 +12,7 @@ The Flink component aggregates the events on the topic and sends the result to a
 * OpenJDK 17 installed and configured
 * mvn installed and configured
 * Tekton CLI installed (`brew install tektoncd-cli`)
+* Nexus Repository Operator operator installed
 
 ## Installation
 
@@ -22,6 +23,7 @@ The Flink component aggregates the events on the topic and sends the result to a
 oc apply -f minio
 oc apply -f strimzi
 oc apply -f tekton
+oc apply -f nexus
 ```
 
 * build the flink aggregator app locally (optional)
@@ -37,6 +39,9 @@ mvn clean package
 ```
 oc apply -f flink
 ```
+
+* create `flink` repository in nexus instance (TODO: how to login and add a repository)
+* configure anonymous access to flink repo in nexus (TODO: how to do this)
 
 ## Add new events to the topic
 
