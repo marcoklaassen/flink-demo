@@ -57,7 +57,7 @@ public class FlinkErrorHandling {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         DataStream<String> input = env.fromElements("valid1", "valid2", "INVALID", "valid3")
-            .name("Sample Data Source")
+            .name("Simple Data List")
             .setDescription("Data Source with three valid and one invalid entries");
         
         SingleOutputStreamOperator<String> processed = input.process(new ProcessFunction<String, String>() {
