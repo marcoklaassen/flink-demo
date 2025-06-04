@@ -7,8 +7,6 @@ RUN mkdir -p /opt/flink/demo
 
 RUN curl -sL https://repo1.maven.org/maven2/org/apache/flink/flink-s3-fs-hadoop/1.20.1/flink-s3-fs-hadoop-1.20.1.jar \
     -o /opt/flink/plugins/flink-s3-fs-hadoop/flink-s3-fs-hadoop-1.20.1.jar
-
-COPY target/flink-error-handling-1.0.jar /opt/flink/demo/
                                         
 RUN chgrp -R 0 /opt/flink && \ 
     chmod -R g=u /opt/flink
