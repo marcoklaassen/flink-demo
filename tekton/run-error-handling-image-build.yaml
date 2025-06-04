@@ -1,0 +1,36 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: flink-s3-enabled-image-
+spec:
+  params:
+    - name: gitrepo
+      value: 'https://github.com/marcoklaassen/simple-flink-demo.git'
+    - name: gitrepo_subdir
+      value: ./flink-s3-enabled-image
+    - name: imagename
+      value: flink-s3
+    - name: containerfile
+      value: ./Containerfile
+  pipelineRef:
+    name: flink-container-image
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+    - name: source
+      volumeClaimTemplate:
+        metadata:
+          creationTimestamp: null
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+          storageClassName: managed-nfs-storage
+          volumeMode: Filesystem
+        status: {}
+    - emptyDir: {}
+      name: mvn-settings
