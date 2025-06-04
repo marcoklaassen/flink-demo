@@ -1,0 +1,51 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: flink-jar-deployment
+spec:
+  params:
+    - name: gitrepo
+      description: Git Repository
+      default: 'https://github.com/marcoklaassen/simple-flink-demo.git'
+    - name: gitrepo_subdir
+      description: Git Repository Sub Directory
+  workspaces:
+    - name: source
+    - name: mvn-settings
+  tasks:
+    - name: git
+      params:
+        - name: URL
+          value: $(params.gitrepo)
+        - name: REVISION
+          value: main        
+      taskRef:
+        kind: Task
+        name: git
+      workspaces:
+        - name: output
+          workspace: source
+    - name: maven
+      params:
+        - name: GOALS
+          value:
+            - clean
+            - deploy
+        - name: SUBDIRECTORY
+          value: $(params.gitrepo_subdir)
+      runAfter:
+        - git
+      taskRef:
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: maven-1-18-0
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
+      workspaces:
+        - name: source
+          workspace: source
+        - name: maven_settings
+          workspace: mvn-settings
