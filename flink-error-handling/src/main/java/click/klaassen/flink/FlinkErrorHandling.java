@@ -56,8 +56,10 @@ public class FlinkErrorHandling {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        DataStream<String> input = env.fromElements("valid1", "valid2", "INVALID", "valid3");        
-
+        DataStream<String> input = env.fromElements("valid1", "valid2", "INVALID", "valid3")
+            .name("Sample Data Source")
+            .setDescription("Data Source with three valid and one invalid entries");
+        
         SingleOutputStreamOperator<String> processed = input.process(new ProcessFunction<String, String>() {
 
             private transient Counter successCounter;
@@ -91,7 +93,7 @@ public class FlinkErrorHandling {
         FileSink<String> sink = FileSink
         .forRowFormat(new Path("s3a://flink-error-handling/data"), new SimpleStringEncoder<String>("UTF-8"))
         .build();
-        processed.sinkTo(sink);
+        processed.sinkTo(sink).name("Successful Data Bucket");
         
         // Write Errors to S3 bucket
         DataStream<String> errorStream = processed.getSideOutput(errorOutputTag);
@@ -100,7 +102,7 @@ public class FlinkErrorHandling {
         .forRowFormat(new Path("s3a://flink-error-handling/errors"), new SimpleStringEncoder<String>("UTF-8"))
         .build();
         
-        errorStream.sinkTo(errorSink);        
+        errorStream.sinkTo(errorSink).name("Error Data Bucket");
 
         env.execute("Error handling with Prometheus and S3");
     }
