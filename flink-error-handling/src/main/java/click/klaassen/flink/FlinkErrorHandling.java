@@ -37,6 +37,7 @@ import org.apache.flink.core.fs.Path;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.Date;
 import java.util.Objects;
 
 // JSON
@@ -104,6 +105,6 @@ public class FlinkErrorHandling {
         
         errorStream.sinkTo(errorSink).name("Error Data Bucket");
 
-        env.execute("Error handling with Prometheus and S3");
+        env.execute("Error handling with Prometheus and S3 at " + new Date().toString());
     }
 }
