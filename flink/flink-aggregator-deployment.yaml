@@ -3,7 +3,7 @@ kind: FlinkDeployment
 metadata:
   name: flink-aggregator
 spec:
-  image: image-registry.openshift-image-registry.svc:5000/flink-demo/flink:latest
+  image: image-registry.openshift-image-registry.svc:5000/flink-demo/flink-aggregator:latest
   flinkVersion: v1_20
 
   logConfiguration:
