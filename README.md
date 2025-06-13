@@ -13,6 +13,7 @@ The Flink component aggregates the events on the topic and sends the result to a
 * mvn installed and configured
 * Tekton CLI installed (`brew install tektoncd-cli`)
 * Nexus Repository Operator operator installed
+* Grafana Operator - 5.18.0 provided by Grafana Labs installed 
 
 ## Installation
 
@@ -86,3 +87,4 @@ Access the Flink Dashboard (`https://flink-aggregator-flink-demo.apps.ocp4.klaas
 * https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/resource-providers/native_kubernetes/
 * https://min.io/docs/minio/kubernetes/upstream/index.html
 * https://docs.redhat.com/en/documentation/openshift_container_platform/4.18
+* https://developers.redhat.com/articles/2023/08/08/how-monitor-workloads-using-openshift-monitoring-stack#how_to_monitor_a_sample_application
