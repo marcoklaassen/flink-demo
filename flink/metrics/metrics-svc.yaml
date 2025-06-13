@@ -1,0 +1,41 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: flink-session-job-metrics
+  labels:
+    app: flink-session-job-metrics
+spec:  
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 9249
+      targetPort: 9249
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: flink-session
+    component: jobmanager
+    type: flink-native-kubernetes
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: flink-session-task-metrics
+  labels:
+    app: flink-session-task-metrics
+spec:  
+  ports:
+    - name: metrics
+      protocol: TCP
+      port: 9249
+      targetPort: 9249
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: flink-session
+    component: taskmanager
+    type: flink-native-kubernetes
