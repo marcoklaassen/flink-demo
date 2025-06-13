@@ -69,8 +69,8 @@ public class FlinkErrorHandling {
             @Override            
             public void open(Configuration parameters) throws Exception {
                 MetricGroup metricGroup = getRuntimeContext().getMetricGroup();
-                successCounter = metricGroup.counter("success_counter");
-                errorCounter = metricGroup.counter("error_counter");
+                successCounter = metricGroup.addGroup("error_handling_demo").counter("success_counter");
+                errorCounter = metricGroup.addGroup("error_handling_demo").counter("error_counter");
             }
 
             @Override
@@ -104,6 +104,11 @@ public class FlinkErrorHandling {
         .build();
         
         errorStream.sinkTo(errorSink).name("Error Data Bucket");
+
+        /* dirty Workaround to allow prometheus scraping all metrics properly */
+        env.addSource(new DelayingSource())
+        .map(v -> 0)
+        .name("KeepAliveStage");
 
         env.execute("Error handling with Prometheus and S3 at " + new Date().toString());
     }
