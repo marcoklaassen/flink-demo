@@ -1,5 +1,14 @@
 # Flink Error Handling Example
 
+This is a simple Flink application which shows how to handle errors. 
+It uses static sample data with valid and invalid entries. 
+
+The application shows that you can 
+1. redirect invalid data to a separate sink - so you're able to identify the invalid data in an S3 storage
+1. use a custom metrics to count errors - so your're able to analyse them in a prometheus instance or a grafana dashboard
+
+This application also shows how to setup your local development machine to test the application. 
+
 ## Local Development & Setup
 
 Install Flink CLI: 

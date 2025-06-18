@@ -1,7 +1,24 @@
-# Simple Flink Demo
+# Flink Demo
 
-This is a simple Apache Flink Demo. It includes a strimzi KafkaBridge to produce kafka messages on a topic via HTTP. 
-The Flink component aggregates the events on the topic and sends the result to an API endpoint. 
+This is an Apache Flink Demo which shows how to configure and operate Apache Flink on an OpenShift cluster and how to handle data streaming and batch processing with error handling and observability. 
+
+It covers use cases like: 
+1. continues streaming of data from a kafka topic
+1. sink based error handling 
+1. metrics based error handling
+1. local development with flink applications
+1. setup and configure an OpenShift namespace
+1. setup OpenShift user workload observability and let flink apps produce metrics
+1. setup a grafana instance and implement a grafana dashboard for error handling of flink apps
+1. setup a Minio instance to store the checkpoints, savepoints and the data which was processed by the flink app
+1. setup a nexus instance to manage the flink apps 
+1. configure tekton piplines to implement a fully automated CI/CD pipeline for the entire flink application and infrastructure
+1. setup and configure a strimzi kafka instance and a kafka bridge to produce events to the kafka topic via HTTP requests 
+
+
+## Demo Architecture
+
+![Demo Architecture](img/demo-architecture.png)
 
 
 ## Prerequisites
@@ -15,7 +32,8 @@ The Flink component aggregates the events on the topic and sends the result to a
 * Nexus Repository Operator operator installed
 * Grafana Operator - 5.18.0 provided by Grafana Labs installed 
 
-## Installation
+
+## Installation on OpenShift
 
 * create a new project `flink` with `oc new-project flink-demo`
 * apply the manifests for minio (to provide the jar file), strimzi (kafka infrastructure) and the tekton pipeline to build the java application and the flink-container-image: 
