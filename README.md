@@ -217,12 +217,12 @@ This is an example of a sucessfully finished job:
 
 You can also have a look at the Flink Dashboard (`https://flink-session-flink-demo.apps.<your-host>/#/overview`) where you can see all running and already completed jobs: 
 
-[Flink Dashboard](img/flink-error-handling-dashboard.png)
+![Flink Dashboard](img/flink-error-handling-dashboard.png)
 
 If you would like to have a deeper look into the job check the job overview page. 
 There you can find the different tasks and a diagram of the dataflow. You also get information about which element sent and received how many messages. This is also a great indicator of monitoring the execution state. 
 
-[Flink Job Overview Page](img/flink-job-overview-page.png)
+![Flink Job Overview Page](img/flink-job-overview-page.png)
 
 #### Metrics
 
@@ -237,7 +237,7 @@ In this state we are already able to observe our Flink environment in the built-
 
 With this url you'll be redirected direcly to a dashboard where you can find the number of running jobs in the history. 
 
-[OpenShift Metrics](img/ocp-metrics.png)
+![OpenShift Metrics](img/ocp-metrics.png)
 
 But to build end-user compatible and easy accessible dashboards we have a simple Grafana Dashboard set up. 
 This dashboard (`https://grafana-flink-demo.apps.<your-host>/d/aeou10nstrxmoc/flink-dashboard?from=now-1h&to=now&timezone=browser`) has 3 elements: 
@@ -253,7 +253,7 @@ This dashboard (`https://grafana-flink-demo.apps.<your-host>/d/aeou10nstrxmoc/fl
    - which task id 
    - ...
 
-[Grafana Dashboard](img/grafana-dashboard.png)
+![Grafana Dashboard](img/grafana-dashboard.png)
 
 ## Links & Resources
 
