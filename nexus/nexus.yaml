@@ -2,7 +2,6 @@ kind: NexusRepo
 apiVersion: sonatype.com/v1alpha1
 metadata:
   name: nexus
-  namespace: flink-demo
 spec:
   config:
     data: null

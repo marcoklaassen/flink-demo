@@ -7,7 +7,7 @@ The application shows that you can
 1. redirect invalid data to a separate sink - so you're able to identify the invalid data in an S3 storage
 1. use a custom metrics to count errors - so your're able to analyse them in a prometheus instance or a grafana dashboard
 
-This application also shows how to setup your local development machine to test the application. 
+This application also shows how to setup your local development machine to test the application.
 
 ## Local Development & Setup
 
@@ -72,4 +72,13 @@ mc cat local/flink-error-handling/$(mc ls --recursive --json local/flink-error-h
 Stop cluster:
 ```
 flink/bin/flink-1.20.1/bin/stop-cluster.sh
+```
+
+## Trigger Build process on OpenShift
+
+First build the custom flink base image with the s3 plugin enabled. This image is used by the flink deployment custom resource. The second pipeline will build the java application and deploy it to the nexus repository. The flink session job customer resource - which is created by the K8s cron job or the end-user itself - will use the latest version of the jar deployed on the nexus repository to execute the tasks. 
+
+```
+oc create -f tekton/run/run-s3-enabled-image-build.yaml
+oc create -f tekton/run/run-error-handling-jar-deploy.yaml
 ```

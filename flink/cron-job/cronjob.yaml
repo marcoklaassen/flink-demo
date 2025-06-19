@@ -19,5 +19,5 @@ spec:
                 - |
                   echo "FlinkSessionJob is creating..."
                   kubectl create -f \
-                    https://raw.githubusercontent.com/marcoklaassen/simple-flink-demo/refs/heads/main/flink/custom-resources/flink-error-handling-job.yaml
+                    https://raw.githubusercontent.com/marcoklaassen/simple-flink-demo/refs/heads/main/flink/session-job/flink-error-handling-job.yaml
           restartPolicy: OnFailure
