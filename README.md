@@ -172,7 +172,88 @@ Access the Flink Dashboard (`https://flink-aggregator-flink-demo.apps.<your-host
 
 This demo handles errors in data processing and represents a cron job. 
  
- TODO: Error Handling Demo instructions
+#### Create new Flink Session Job
+
+Creating a new Flink Session Job custom resource executes a new job:
+
+```
+oc create -f flink/session-job/flink-error-handling-job.yaml
+```
+
+You can also submit new Jobs via the Flink Dashboard (`https://flink-session-flink-demo.apps.<your-host>/#/submit`) by uploading a JAR file. 
+
+#### Monitoring in general
+
+The first indicator to observe the state of the job is to have a look at the status property at the custom resource itself: 
+
+```
+oc get flinksessionjobs.flink.apache.org \
+  --sort-by=.metadata.creationTimestamp \
+  -o json | jq '.items[-1].status'
+```
+
+This is an example of a sucessfully finished job: 
+
+```
+{
+  "jobStatus": {
+    "checkpointInfo": {
+      "lastPeriodicCheckpointTimestamp": 0
+    },
+    "jobId": "71738e12120b93872bbab8a69cfdb26b",
+    "jobName": "Error handling with Prometheus and S3 at Thu Jun 19 12:55:08 UTC 2025",
+    "savepointInfo": {
+      "lastPeriodicSavepointTimestamp": 0,
+      "savepointHistory": []
+    },
+    "startTime": "1750337708445",
+    "state": "FINISHED",
+    "updateTime": "1750337785600",
+    "upgradeSavepointPath": "s3a://flink-data-checkpoints/checkpoints/71738e12120b93872bbab8a69cfdb26b/chk-13"
+  },
+  [...]
+}
+```
+
+You can also have a look at the Flink Dashboard (`https://flink-session-flink-demo.apps.<your-host>/#/overview`) where you can see all running and already completed jobs: 
+
+[Flink Dashboard](img/flink-error-handling-dashboard.png)
+
+If you would like to have a deeper look into the job check the job overview page. 
+There you can find the different tasks and a diagram of the dataflow. You also get information about which element sent and received how many messages. This is also a great indicator of monitoring the execution state. 
+
+[Flink Job Overview Page](img/flink-job-overview-page.png)
+
+#### Metrics
+
+To have an extended method to monitor job executions Flink supports providing default and application specific metrics. 
+The error handling application produces two customer metrics. 
+A success- and an error counter. 
+Together with the default metrics of Jobmanager and Taskmanager in Flink we get a lot of information about our environment. 
+
+In this demo we use the workload user monitoring from the OpenShift cluster which allows us to store the provided metrics by flink in a prometheus instance without any further configuration. We just have to enable the user workload monitoring via a config map and apply a service monitor for our metrics entpoint the the taskmanager and the jobmanager. 
+
+In this state we are already able to observe our Flink environment in the built-in OpenShift Prometheus UI: `https://console-openshift-console.apps.<your-host>/monitoring/query-browser?query0=flink_jobmanager_numRunningJobs`
+
+With this url you'll be redirected direcly to a dashboard where you can find the number of running jobs in the history. 
+
+[OpenShift Metrics](img/ocp-metrics.png)
+
+But to build end-user compatible and easy accessible dashboards we have a simple Grafana Dashboard set up. 
+This dashboard (`https://grafana-flink-demo.apps.<your-host>/d/aeou10nstrxmoc/flink-dashboard?from=now-1h&to=now&timezone=browser`) has 3 elements: 
+
+1. The `ERROR Occured` indicator which is `1` and red when an error occured in one of the jobs.
+1. The `Errors` panel which combines the 
+   - number of running jobs
+   - error counter
+   - success counter
+1. The `Error Summary` to have a more detailed look at the errors with information about
+   - when the error occured
+   - in which job 
+   - which task id 
+   - ...
+
+[Grafana Dashboard](img/grafana-dashboard.png)
 
 ## Links & Resources
 
