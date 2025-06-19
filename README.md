@@ -217,7 +217,7 @@ This is an example of a sucessfully finished job:
 
 You can also have a look at the Flink Dashboard (`https://flink-session-flink-demo.apps.<your-host>/#/overview`) where you can see all running and already completed jobs: 
 
-![Flink Dashboard](img/flink-error-handling-dashboard.png)
+![Flink Dashboard](img/flink-error-handling-overview.png)
 
 If you would like to have a deeper look into the job check the job overview page. 
 There you can find the different tasks and a diagram of the dataflow. You also get information about which element sent and received how many messages. This is also a great indicator of monitoring the execution state. 
