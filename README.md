@@ -21,14 +21,14 @@ It covers use cases like:
 - [Demo Architecture](#demo-architecture)
 - [Prerequisites](#prerequisites)
 - [Installation and Configuration](#installation-and-configuration)
- - [Installation of supporting components on OpenShift](#installation-of-supporting-components-on-openshift)
- - [Configure Minio](#configure-minio)
- - [Install Flink components on OpenShift](#install-flink-components-on-openshift)
- - [Configure Nexus server](#configure-nexus-server)
- - [Build and Deploy Flink applications](#build-and-deploy-flink-applications)
+   - [Installation of supporting components on OpenShift](#installation-of-supporting-components-on-openshift)
+   - [Configure Minio](#configure-minio)
+   - [Install Flink components on OpenShift](#install-flink-components-on-openshift)
+   - [Configure Nexus server](#configure-nexus-server)
+   - [Build and Deploy Flink applications](#build-and-deploy-flink-applications)
 - [Play around with the demo](#play-around-with-the-demo)
- - [Flink Kafka Consumer Demo ](#flink-kafka-consumer-demo)
- - [Flink Error Handling Demo](#flink-error-handling-demo)
+   - [Flink Kafka Consumer Demo ](#flink-kafka-consumer-demo)
+   - [Flink Error Handling Demo](#flink-error-handling-demo)
 - [Links & Resources](#links--resources)
 
 ## Demo Architecture
@@ -53,17 +53,21 @@ It covers use cases like:
 
 * create a new project `flink` with `oc new-project flink-demo`
 * apply the manifests for 
- * minio (to manage s3 buckets for success / error data sinks and the flink state)
- * strimzi for kafka instance and the kafka bridge to be able to produce new messages via http
- * tekton pipeline to build the java application and the custom flink base image
- * nexus server to manage the jar artifact
+  * minio (to manage s3 buckets for success / error data sinks and the flink state)
+  * strimzi for kafka instance and the kafka bridge to be able to produce new messages via http
+  * tekton pipeline to build the java application and the custom flink base image
+  * nexus server to manage the jar artifact
+  * grafana to setup the grafana instance, the prometheus datasource and the dashboard
 
 ```
 oc apply -f minio
 oc apply -f strimzi
 oc apply -f tekton/pipeline
 oc apply -f nexus
+oc apply -f grafana
 ```
+
+> For the grafana deployment you have to replace the `datasource.yaml.example`. There is a `token` available in the created `grafana-serviceaccount-token` secret. For this demo there is no solution to inject the secret in a more secret way. Keep in mind that this is not a good solution when it comes to production deployments. 
 
 ### Configure Minio
 
@@ -111,12 +115,12 @@ The metrics part is responsible to configure user workload monitoring on OpenShi
 
 
 * create `flink` repository in nexus instance (`https://nexus-flink-demo.apps.<your-host>/`)
- * create new repository from type maven (hosted)
- * name should be `flink`
- * version policy: `release`
- * deployment policy: `Allow redeploy`
+  * create new repository from type maven (hosted)
+  * name should be `flink`
+  * version policy: `release`
+  * deployment policy: `Allow redeploy`
 * configure anonymous access to flink repo in nexus to avoid more complexity in the pipeline for this demo. In production environments it's highly recommended to implement proper security concepts.
- * in this demo use case I simply add `nx-admin` role to user `anonymous` (not recommended for production environments)
+  * in this demo use case I simply add `nx-admin` role to user `anonymous` (not recommended for production environments)
 
 
 ### Build and Deploy Flink applications
