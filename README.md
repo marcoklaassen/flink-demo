@@ -182,6 +182,13 @@ oc create -f flink/session-job/flink-error-handling-job.yaml
 
 You can also submit new Jobs via the Flink Dashboard (`https://flink-session-flink-demo.apps.<your-host>/#/submit`) by uploading a JAR file. 
 
+
+If you would like to setup a cron job which executes the job recurrent apply this K8s cron job (and a service account with permission to create CRs): 
+
+```
+oc apply -f flink/cron-job
+```
+
 #### Monitoring in general
 
 The first indicator to observe the state of the job is to have a look at the status property at the custom resource itself: 
