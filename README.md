@@ -18,18 +18,25 @@ It covers use cases like:
 
 ## Table of content
 
-- [Demo Architecture](#demo-architecture)
-- [Prerequisites](#prerequisites)
-- [Installation and Configuration](#installation-and-configuration)
-   - [Installation of supporting components on OpenShift](#installation-of-supporting-components-on-openshift)
-   - [Configure Minio](#configure-minio)
-   - [Install Flink components on OpenShift](#install-flink-components-on-openshift)
-   - [Configure Nexus server](#configure-nexus-server)
-   - [Build and Deploy Flink applications](#build-and-deploy-flink-applications)
-- [Play around with the demo](#play-around-with-the-demo)
-   - [Flink Kafka Consumer Demo ](#flink-kafka-consumer-demo)
-   - [Flink Error Handling Demo](#flink-error-handling-demo)
-- [Links & Resources](#links--resources)
+- [Flink Demo](#flink-demo)
+  - [Table of content](#table-of-content)
+  - [Demo Architecture](#demo-architecture)
+  - [Prerequisites](#prerequisites)
+  - [Installation and Configuration](#installation-and-configuration)
+    - [Installation of supporting components on OpenShift](#installation-of-supporting-components-on-openshift)
+    - [Configure Minio](#configure-minio)
+      - [UI based](#ui-based)
+      - [CLI based](#cli-based)
+    - [Install Flink components on OpenShift](#install-flink-components-on-openshift)
+    - [Configure Nexus server](#configure-nexus-server)
+    - [Build and Deploy Flink applications](#build-and-deploy-flink-applications)
+  - [Play around with the demo](#play-around-with-the-demo)
+    - [Flink Kafka Consumer Demo](#flink-kafka-consumer-demo)
+    - [Flink Error Handling Demo](#flink-error-handling-demo)
+      - [Create new Flink Session Job](#create-new-flink-session-job)
+      - [Monitoring in general](#monitoring-in-general)
+      - [Metrics](#metrics)
+  - [Links \& Resources](#links--resources)
 
 ## Demo Architecture
 
@@ -66,8 +73,6 @@ oc apply -f tekton/pipeline
 oc apply -f nexus
 oc apply -f grafana
 ```
-
-> For the grafana deployment you have to replace the `datasource.yaml.example`. There is a `token` available in the created `grafana-serviceaccount-token` secret. For this demo there is no solution to inject the secret in a more secret way. Keep in mind that this is not a good solution when it comes to production deployments. 
 
 ### Configure Minio
 
