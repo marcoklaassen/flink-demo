@@ -33,7 +33,7 @@ spec:
             {
             "datasource": {
                 "type": "prometheus",
-                "uid": "d28a07de-9aab-4fd3-8cd6-9bd797a7296f"
+                "uid": "a8191978-a5c5-454b-ae37-3f2fcf841bc8"
             },
             "fieldConfig": {
                 "defaults": {
@@ -102,7 +102,7 @@ spec:
             {
             "datasource": {
                 "type": "prometheus",
-                "uid": "d28a07de-9aab-4fd3-8cd6-9bd797a7296f"
+                "uid": "a8191978-a5c5-454b-ae37-3f2fcf841bc8"
             },
             "fieldConfig": {
                 "defaults": {
@@ -233,7 +233,8 @@ spec:
             },
             {
             "datasource": {
-                "uid": "d28a07de-9aab-4fd3-8cd6-9bd797a7296f"
+                "type": "prometheus",
+                "uid": "a8191978-a5c5-454b-ae37-3f2fcf841bc8"
             },
             "fieldConfig": {
                 "defaults": {
@@ -338,6 +339,6 @@ spec:
         "timezone": "browser",
         "title": "Flink Dashboard",
         "uid": "aeou10nstrxmoc",
-        "version": 2,
+        "version": 5,
         "weekStart": ""
         }
