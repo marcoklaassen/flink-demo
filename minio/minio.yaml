@@ -58,3 +58,19 @@ spec:
     termination: edge
   port:
     targetPort: 9090
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: minio-api
+spec:
+  path: /
+  to:
+    name: minio
+    weight: 100
+    kind: Service
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  port:
+    targetPort: 9000
