@@ -20,8 +20,14 @@ spec:
         - name: REVISION
           value: main        
       taskRef:
-        kind: Task
-        name: git
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: git-clone
+          - name: namespace
+            value: openshift-pipelines
+        resolver: cluster
       workspaces:
         - name: output
           workspace: source
@@ -40,7 +46,7 @@ spec:
           - name: kind
             value: task
           - name: name
-            value: maven-1-18-0
+            value: maven
           - name: namespace
             value: openshift-pipelines
         resolver: cluster
