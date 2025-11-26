@@ -12,6 +12,7 @@ spec:
   datasource:
     name: Prometheus
     type: prometheus
+    uid: a8191978-a5c5-454b-ae37-3f2fcf841bc8
     access: proxy
     url: https://thanos-querier.openshift-monitoring.svc:9091
     isDefault: true

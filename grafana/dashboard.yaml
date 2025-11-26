@@ -186,7 +186,7 @@ spec:
                 {
                 "datasource": {
                     "type": "prometheus",
-                    "uid": "d28a07de-9aab-4fd3-8cd6-9bd797a7296f"
+                    "uid": "a8191978-a5c5-454b-ae37-3f2fcf841bc8"
                 },
                 "disableTextWrap": false,
                 "editorMode": "code",
@@ -204,7 +204,7 @@ spec:
                 {
                 "datasource": {
                     "type": "prometheus",
-                    "uid": "d28a07de-9aab-4fd3-8cd6-9bd797a7296f"
+                    "uid": "a8191978-a5c5-454b-ae37-3f2fcf841bc8"
                 },
                 "editorMode": "code",
                 "expr": "sum(flink_taskmanager_job_task_operator_error_handling_demo_success_counter)",
@@ -217,7 +217,7 @@ spec:
                 {
                 "datasource": {
                     "type": "prometheus",
-                    "uid": "d28a07de-9aab-4fd3-8cd6-9bd797a7296f"
+                    "uid": "a8191978-a5c5-454b-ae37-3f2fcf841bc8"
                 },
                 "editorMode": "code",
                 "expr": "sum(flink_jobmanager_numRunningJobs)",
