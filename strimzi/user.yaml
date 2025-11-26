@@ -9,21 +9,50 @@ spec:
     type: tls
   authorization:
     acls:
+      # Topic permissions
       - host: '*'
         operations:
           - Read
-          - Describe
           - Write
           - Create
+          - Describe
+          - Alter
+          - Delete
         resource:
           name: flink
           patternType: literal
           type: topic
+      # Consumer group permissions
       - host: '*'
         operations:
           - Read
+          - Describe
         resource:
           name: flink
           patternType: literal
           type: group
+      # Cluster-level permissions (needed for metadata operations)
+      - host: '*'
+        operations:
+          - Describe
+        resource:
+          type: cluster
+      # Transactional ID permissions (if using transactions)
+      - host: '*'
+        operations:
+          - Write
+          - Describe
+        resource:
+          name: '*'
+          patternType: literal
+          type: transactionalId
+      # Offsets topic permissions (needed for consumer groups)
+      - host: '*'
+        operations:
+          - Read
+          - Write
+        resource:
+          name: __consumer_offsets
+          patternType: literal
+          type: topic
     type: simple

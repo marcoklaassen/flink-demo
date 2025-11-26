@@ -48,6 +48,7 @@ It covers use cases like:
 * Up and Running OpenShift Cluster
 * Streams for Apache Kafka operator installed
 * Flink Kubernetes Operator installed
+* Red Hat OpenShift Pipelines operator installed
 * OpenJDK 17 installed and configured
 * mvn installed and configured
 * Tekton CLI installed (`brew install tektoncd-cli`)
@@ -91,13 +92,17 @@ Install & Configure Minio CLI:
 
 ```
 brew install minio/stable/mc
-mc alias set local https://minio-flink-demo.apps.<your-host>/ <user> <password>
+mc alias set local https://minio-api-flink-demo.apps.<your-host>/ <user> <password>
 ```
+
+**Note:** The S3 API endpoint uses a different route (`minio-api-flink-demo`) than the web UI (`minio-flink-demo`). The S3 API route exposes port 9000, which is required for the MinIO CLI to work properly.
 
 Create bucket in minio:
 
 ```
 mc mb local/flink-error-handling
+mc mb local/flink-data-savepoints
+mc mb local/flink-data-checkpoints
 ```
 
 ### Install Flink components on OpenShift
@@ -112,15 +117,28 @@ oc apply -f flink/metrics
 
 In the infrastructure directory there is everything included you need to start a flink deployment and access the flink dashboard. 
 
-In the custom resources directory there are the the flink deployment manifests which deploy two flink job managers to your cluster. 
+In the custom resources directory there are the flink deployment manifests which deploy two flink job managers to your cluster. 
 
 The metrics part is responsible to configure user workload monitoring on OpenShift and the service monitor to get the metrics. 
 
 ### Configure Nexus server
 
+**Get the default admin password:**
+
+The default admin username is `admin`. The Nexus Repository Operator automatically sets the initial admin password in the pod's environment variable `NEXUS_SECURITY_INITIAL_PASSWORD`. To retrieve it:
+
+```bash
+# Find the Nexus pod name
+NEXUS_POD=$(oc get pods -n flink-demo -l app=nxrm -o name | head -1 | sed 's/pod\///')
+
+# Get the admin password from the environment variable
+oc exec -n flink-demo $NEXUS_POD -- env | grep NEXUS_SECURITY_INITIAL_PASSWORD
+```
+
+**Note:** After first login, Nexus will prompt you to change the password. It's highly recommended to do so.
 
 * create `flink` repository in nexus instance (`https://nexus-flink-demo.apps.<your-host>/`)
-  * create new repository from type maven (hosted)
+  * create new repository from type `maven2 (hosted)`
   * name should be `flink`
   * version policy: `release`
   * deployment policy: `Allow redeploy`
