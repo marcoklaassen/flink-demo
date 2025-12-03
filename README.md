@@ -179,7 +179,7 @@ curl -i -X POST https://kafka-bridge-flink-demo.apps.<your-host>/topics/flink \
 * have a look to the `flink-aggregator-taskmanager` pod's logs and you'll see the aggregation of the events
 
 ```
-oc logs -f $(oc get pods -l app=flink-aggregator -l component=taskmanager -o name) | grep click.klaassen.flink
+oc logs -f $(oc get pods -l app=flink-aggregator -l component=taskmanager --field-selector='status.phase=Running' -o name) | grep click.klaassen.flink
 ```
 
 Example output: 
